@@ -1,0 +1,13 @@
+package com.laguama.transacciones_api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class TransaccionesApiApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(TransaccionesApiApplication.class, args);
+	}
+
+}
