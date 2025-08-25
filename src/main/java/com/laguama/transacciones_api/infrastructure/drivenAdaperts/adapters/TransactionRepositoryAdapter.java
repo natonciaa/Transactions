@@ -27,7 +27,24 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
         return mapper.convertValue(jpa.save(entity), Transaction.class);
     }
 
+    @Override public Optional<Transaction> findById(Long id) {
+        return jpa.findById(id).map(t -> mapper.convertValue(t, Transaction.class));
+    }
+
+    @Override public List<Transaction> findAll(String nombre, LocalDateTime fecha, Estado estado) {
+        return jpa.findAll().stream().map(t ->  mapper.convertValue(t, Transaction.class))
+                .filter(t -> nombre == null || t.getNombre().toLowerCase().contains(nombre.toLowerCase()))
+                .filter(t -> fecha == null || t.getFecha().toLocalDate().equals(fecha.toLocalDate()))
+                .filter(t -> estado == null || t.getEstado() == estado)
+                .collect(Collectors.toList());
+    }
+
+    @Override public void deleteById(Long id) { jpa.deleteById(id); }
+
     @Override public long countCreatedSince(LocalDateTime since) { return jpa.countCreatedSince(since); }
 
-
+    @Override public List<Transaction> findPendingOrderByFechaAsc() {
+        return jpa.findByEstadoOrderByFechaAsc(Estado.PENDIENTE).stream()
+                .map(t ->mapper.convertValue(t,Transaction.class)).collect(Collectors.toList());
+    }
 }
